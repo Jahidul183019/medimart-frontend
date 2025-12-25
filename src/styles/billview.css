@@ -1,0 +1,58 @@
+.bill-root {
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+}
+
+.bill-card {
+    width: 520px;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 18px 40px rgba(0,0,0,0.12);
+    text-align: center;
+}
+
+.bill-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: #007aff;
+}
+
+.bill-subtitle {
+    margin-bottom: 20px;
+    font-size: 15px;
+    color: #5a5a5a;
+}
+
+.bill-summary {
+    text-align: left;
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 15px;
+    background: #f5faff;
+    border-radius: 12px;
+}
+
+.bill-actions {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.btn-primary {
+    padding: 12px;
+    background: #007aff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.btn-secondary {
+    padding: 11px;
+    background: #ececec;
+    border-radius: 10px;
+    font-size: 15px;
+}

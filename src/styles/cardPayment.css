@@ -1,0 +1,129 @@
+.pay-root {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #e3f2fd, #e0f7fa);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+.pay-card {
+  width: 100%;
+  max-width: 900px;
+  background: #fdfefe;
+  border-radius: 26px;
+  padding: 32px 50px 28px;
+  box-shadow: 0 24px 55px rgba(0, 0, 0, 0.25);
+}
+
+/* Title */
+.pay-title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.pay-subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  color: #607d8b;
+}
+
+.pay-divider {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 18px 0;
+}
+
+/* Billing */
+.pay-billing-title {
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.pay-billing-amount span {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+/* Section title */
+.pay-section-title {
+  margin: 10px 0 12px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Form rows */
+.pay-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pay-row {
+  display: grid;
+  grid-template-columns: 160px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 20px;
+}
+
+.pay-label {
+  font-size: 14px;
+  text-align: left;
+}
+
+.pay-input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #c5cae9;
+  background: #ffffff;
+  font-size: 14px;
+  outline: none;
+}
+
+.pay-input:focus {
+  border-color: #5c6bc0;
+  box-shadow: 0 0 0 3px rgba(92, 107, 192, 0.18);
+}
+
+/* Message */
+.pay-message {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #d32f2f;
+}
+
+/* Buttons (reuse gradients from cart.css) */
+.pay-actions {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+/* We reuse the same class names so cart.css gradients apply,
+   but just in case cart.css not loaded, keep them here as well */
+.btn-gradient-danger,
+.btn-gradient-primary {
+  padding: 10px 32px;
+  border-radius: 999px;
+  border: none;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+}
+
+.btn-gradient-danger {
+  background: linear-gradient(135deg, #ef5350, #ec407a);
+}
+
+.btn-gradient-primary {
+  background: linear-gradient(135deg, #29b6f6, #1e88e5);
+}

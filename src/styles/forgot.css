@@ -1,0 +1,79 @@
+.forgot-root {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #ffef76, #ffbb00);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    font-family: system-ui, sans-serif;
+}
+
+.forgot-card {
+    background: #fff;
+    padding: 30px;
+    width: 380px;
+    border-radius: 14px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.forgot-title {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.forgot-sub {
+    margin-bottom: 20px;
+    color: #444;
+}
+
+.forgot-btn {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: none;
+    border-radius: 8px;
+    background: #ffd34d;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.forgot-btn:hover {
+    background: #f5c136;
+}
+
+.forgot-section {
+    margin-bottom: 15px;
+}
+
+.forgot-input {
+    width: 100%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 10px;
+    background: #ff9c00;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    color: #fff;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #ff7a00;
+}
+
+.forgot-message {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #d40000;
+}

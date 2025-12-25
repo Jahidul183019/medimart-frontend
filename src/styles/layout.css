@@ -1,0 +1,136 @@
+/* src/styles/layout.css */
+
+/* =========================
+   GLOBAL TOKENS
+========================= */
+:root {
+    --page-max-width: 1200px;
+    --page-padding: 14px;
+
+    --card-radius: 24px;
+    --card-bg: rgba(255, 255, 255, 0.94);
+    --card-shadow: 0 22px 55px rgba(15, 23, 42, 0.18);
+
+    --text-dark: #0f172a;
+    --text-muted: #64748b;
+
+    --border-soft: rgba(2, 6, 23, 0.10);
+}
+
+/* Tablet */
+@media (min-width: 768px) {
+    :root {
+        --page-padding: 20px;
+    }
+}
+
+/* Laptop / Desktop */
+@media (min-width: 1024px) {
+    :root {
+        --page-padding: 24px;
+    }
+}
+
+/* =========================
+   SAFE GLOBAL FIXES
+========================= */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    overflow-x: hidden; /* ✅ prevent random horizontal scroll */
+    color: var(--text-dark);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* =========================
+   PAGE WRAPPER
+   Use on every page root:
+   <div className="page-root ...">
+     <div className="page-inner ...">
+========================= */
+.page-root {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh; /* ✅ mobile browser safe height */
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    padding: var(--page-padding);
+}
+
+.page-inner {
+    width: 100%;
+    max-width: var(--page-max-width);
+    margin: 0 auto;
+}
+
+/* Optional: common card wrapper (use everywhere) */
+.page-card {
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--card-radius);
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-soft);
+    overflow: hidden; /* ✅ keep inside within rounded corners */
+}
+
+/* =========================
+   TABLE RESPONSIVENESS
+========================= */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 16px;
+}
+
+/* Optional: make table look cleaner + sticky header */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 520px; /* ✅ prevents squish on mobile */
+}
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* =========================
+   BASIC RESPONSIVE TYPO
+========================= */
+.h1 {
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .h1 { font-size: 20px; }
+}
+
+@media (min-width: 601px) {
+    .h1 { font-size: 26px; }
+}
+
+.muted {
+    color: var(--text-muted);
+}
+
+/* =========================
+   SMALL UTILITIES
+========================= */
+.stack-8  { display: flex; flex-direction: column; gap: 8px; }
+.stack-12 { display: flex; flex-direction: column; gap: 12px; }
+.row-12   { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }

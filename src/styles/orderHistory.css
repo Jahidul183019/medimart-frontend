@@ -1,0 +1,431 @@
+/* ===============================
+   ROOT BACKGROUND
+================================ */
+.oh-root {
+    width: 100%;
+    min-height: 100vh;
+    background:
+            radial-gradient(900px 420px at 18% 8%, rgba(0,150,136,.18), transparent 62%),
+            radial-gradient(700px 380px at 88% 16%, rgba(59,130,246,.10), transparent 58%),
+            radial-gradient(900px 520px at 40% 92%, rgba(168,85,247,.08), transparent 62%),
+            linear-gradient(135deg, #eefaf7, #f7fbfa);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 24px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ===============================
+   MAIN GLASS CARD
+================================ */
+.oh-card {
+    width: 100%;
+    max-width: 1100px;
+    background: rgba(255,255,255,.78);
+    border-radius: 28px;
+    padding: 22px 26px 18px;
+    border: 1px solid rgba(15,23,42,.08);
+    box-shadow:
+            0 34px 95px rgba(15,23,42,.14),
+            0 14px 34px rgba(15,23,42,.10),
+            inset 0 1px 0 rgba(255,255,255,.65);
+    backdrop-filter: blur(18px) saturate(1.2);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Glow accents */
+.oh-card::before,
+.oh-card::after {
+    content: "";
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(28px);
+    opacity: .55;
+    pointer-events: none;
+}
+.oh-card::before {
+    width: 220px;
+    height: 220px;
+    left: -70px;
+    top: -80px;
+    background: rgba(0,150,136,.25);
+}
+.oh-card::after {
+    width: 240px;
+    height: 240px;
+    right: -90px;
+    top: -90px;
+    background: rgba(59,130,246,.18);
+}
+
+/* ===============================
+   HEADER
+================================ */
+.oh-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.oh-back-btn {
+    border: 1px solid rgba(15,23,42,.10);
+    border-radius: 999px;
+    padding: 9px 14px;
+    font-size: 13px;
+    cursor: pointer;
+    background: rgba(255,255,255,.75);
+    font-weight: 800;
+    box-shadow: 0 10px 22px rgba(15,23,42,.10);
+}
+
+.oh-back-btn:hover {
+    background: rgba(255,255,255,.92);
+    transform: translateY(-1px);
+}
+
+.oh-title {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: #0f172a;
+}
+
+.oh-subtitle {
+    margin: 2px 0 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* ===============================
+   TABLE WRAPPER
+================================ */
+.oh-table-wrapper {
+    background: rgba(255,255,255,.70);
+    border-radius: 20px;
+    padding: 12px 14px;
+    margin-bottom: 12px;
+    max-height: 460px;
+    overflow: auto;
+    border: 1px solid rgba(15,23,42,.06);
+    box-shadow:
+            0 18px 50px rgba(15,23,42,.08),
+            inset 0 1px 0 rgba(255,255,255,.65);
+}
+
+/* scrollbar */
+.oh-table-wrapper::-webkit-scrollbar { width: 10px; height: 10px; }
+.oh-table-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(0,150,136,.32);
+    border-radius: 999px;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.oh-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    min-width: 860px;
+}
+
+.oh-table th {
+    position: sticky;
+    top: 0;
+    padding: 12px;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    background: linear-gradient(135deg, #eff6ff, #e0f2fe);
+    border-bottom: 1px solid rgba(15,23,42,.08);
+}
+
+.oh-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(15,23,42,.06);
+    white-space: nowrap;
+}
+
+.oh-table tbody tr:nth-child(odd){ background: rgba(255,255,255,.55); }
+.oh-table tbody tr:nth-child(even){ background: rgba(255,255,255,.78); }
+
+.oh-table tbody tr:hover {
+    background: rgba(0,150,136,.10);
+}
+
+/* ===============================
+   STATUS + ACTION (FIXED)
+================================ */
+.oh-status-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
+}
+
+.oh-status-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 12px;
+    border: 1px solid rgba(15,23,42,.10);
+    background: rgba(255,255,255,.82);
+}
+
+/* status colors */
+.oh-status-pill.status-paid {
+    color: #1e3a8a;
+    background: rgba(59,130,246,.12);
+    border-color: rgba(59,130,246,.30);
+}
+
+.oh-status-pill.status-pending {
+    color: #854d0e;
+    background: rgba(245,158,11,.14);
+    border-color: rgba(245,158,11,.28);
+}
+
+.oh-status-pill.status-delivered {
+    color: #065f46;
+    background: rgba(34,197,94,.12);
+    border-color: rgba(34,197,94,.30);
+}
+
+.oh-status-pill.status-cancelled {
+    color: #991b1b;
+    background: rgba(239,68,68,.10);
+    border-color: rgba(239,68,68,.25);
+}
+
+/* cancel button */
+.oh-cancel-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 12px;
+    border: 1px solid rgba(239,68,68,.25);
+    background: rgba(239,68,68,.10);
+    color: #991b1b;
+    cursor: pointer;
+}
+
+.oh-cancel-btn:hover {
+    background: rgba(239,68,68,.14);
+}
+
+.oh-cancel-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+/* ===============================
+   FOOTER
+================================ */
+.oh-footer {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    text-align: right;
+}
+
+/* ===============================
+   STATES
+================================ */
+.oh-loading,
+.oh-error,
+.oh-empty {
+    padding: 16px 4px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.oh-error { color: #e53935; }
+
+/* ===============================
+   MOBILE
+================================ */
+@media (max-width: 768px) {
+    .oh-root { padding: 16px 12px; }
+    .oh-card { padding: 16px 14px; border-radius: 22px; }
+    .oh-title { font-size: 22px; }
+    .oh-table { min-width: 760px; font-size: 13px; }
+}
+/* ===============================
+   CLICKABLE CELLS
+================================ */
+.clickable {
+    cursor: pointer;
+}
+.clickable:hover {
+    text-decoration: underline;
+}
+
+/* ===============================
+   EXTRA STATUS COLORS
+================================ */
+.oh-status-pill.status-cancel_requested {
+    color: #7c2d12;
+    background: rgba(249, 115, 22, 0.12);
+    border-color: rgba(249, 115, 22, 0.30);
+}
+
+.oh-status-pill.status-rejected_cancel {
+    color: #7c2d12;
+    background: rgba(245, 158, 11, 0.12);
+    border-color: rgba(245, 158, 11, 0.28);
+}
+
+/* ===============================
+   CANCEL REASON MODAL
+================================ */
+.oh-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, 0.45);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    z-index: 9999;
+}
+
+.oh-modal {
+    width: min(520px, 96vw);
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    border-radius: 22px;
+    padding: 18px 18px 16px;
+    box-shadow:
+            0 30px 90px rgba(15, 23, 42, 0.22),
+            0 10px 30px rgba(15, 23, 42, 0.14),
+            inset 0 1px 0 rgba(255, 255, 255, 0.70);
+    position: relative;
+}
+
+.oh-modal-title {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 900;
+    color: #0f172a;
+    letter-spacing: -0.2px;
+}
+
+.oh-modal-sub {
+    margin: 0 0 12px;
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.oh-modal-label {
+    display: block;
+    margin: 10px 0 6px;
+    font-size: 12px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .06em;
+    color: #334155;
+}
+
+.oh-modal-select,
+.oh-modal-textarea {
+    width: 100%;
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 10px 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.oh-modal-textarea {
+    resize: vertical;
+    min-height: 96px;
+}
+
+.oh-modal-select:focus,
+.oh-modal-textarea:focus {
+    border-color: rgba(0, 150, 136, 0.45);
+    box-shadow: 0 0 0 4px rgba(0, 150, 136, 0.12);
+}
+
+.oh-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.oh-modal-btn {
+    border-radius: 999px;
+    padding: 10px 14px;
+    font-weight: 900;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid rgba(15, 23, 42, 0.12);
+    background: rgba(255, 255, 255, 0.75);
+    box-shadow: 0 10px 22px rgba(15, 23, 42, 0.10);
+}
+
+.oh-modal-btn:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.oh-modal-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.oh-modal-btn.primary {
+    border-color: rgba(0, 150, 136, 0.30);
+    background: rgba(0, 150, 136, 0.10);
+    color: #065f46;
+}
+
+.oh-modal-btn.primary:hover {
+    background: rgba(0, 150, 136, 0.14);
+}
+
+.oh-modal-btn.ghost {
+    color: #0f172a;
+}
+/* ===============================
+   INVOICE BUTTON
+================================ */
+.oh-invoice-btn {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 12px;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    background: rgba(34, 197, 94, 0.12);
+    color: #065f46;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.oh-invoice-btn:hover {
+    background: rgba(34, 197, 94, 0.18);
+    transform: translateY(-1px);
+}
+
+.oh-invoice-btn:active {
+    transform: translateY(0);
+}
+
+.oh-invoice-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}

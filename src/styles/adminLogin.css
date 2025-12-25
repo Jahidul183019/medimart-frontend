@@ -1,0 +1,156 @@
+.admin-root {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* glass card */
+.admin-card {
+    width: 100%;
+    max-width: 520px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 28px;
+    padding: 38px 46px 30px;
+    box-shadow: 0 24px 55px rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(10px);
+}
+
+/* title */
+.admin-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    margin-bottom: 26px;
+    color: #1a3c40;
+}
+
+/* field */
+.admin-field {
+    margin-bottom: 16px;
+}
+
+.admin-label {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 4px;
+    color: #37474f;
+}
+
+/* input */
+.admin-input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    border: 1px solid #b2dfdb;
+    background: #ffffff;
+    font-size: 14px;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.7);
+}
+
+.admin-input:focus {
+    border-color: #00a896;
+    box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.35);
+}
+
+/* =========================
+   PASSWORD TOGGLE (NEW)
+========================= */
+
+/* wrapper so button sits inside input */
+.admin-password-wrap {
+    position: relative;
+    width: 100%;
+}
+
+.admin-input-password {
+    padding-right: 86px; /* space for show button */
+}
+
+/* show / hide button */
+.admin-show-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: #00796b;
+    padding: 6px 10px;
+    border-radius: 10px;
+}
+
+.admin-show-btn:hover {
+    background: rgba(0, 121, 107, 0.12);
+}
+
+/* checkbox row (alternative style if you use checkbox) */
+.admin-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #455a64;
+    margin-top: 6px;
+}
+
+/* validation / info message */
+.admin-message {
+    margin-top: 8px;
+    font-size: 13px;
+    color: #d32f2f;
+}
+
+/* button row */
+.admin-btn-row {
+    margin-top: 24px;
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+}
+
+/* login button */
+.admin-login-btn {
+    padding: 10px 32px;
+    border-radius: 20px;
+    border: none;
+    background: #009688;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+/* back button */
+.admin-back-btn {
+    padding: 10px 32px;
+    border-radius: 20px;
+    border: none;
+    background: #e64a19;
+    color: #ffffff;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.25);
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.admin-login-btn:hover {
+    background: #00796b;
+    transform: translateY(-1px);
+}
+
+.admin-back-btn:hover {
+    background: #d84315;
+    transform: translateY(-1px);
+}

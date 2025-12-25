@@ -1,0 +1,79 @@
+.add-med-root {
+    padding: 20px;
+    max-width: 480px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+.add-med-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.add-med-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+}
+
+.add-med-label {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+}
+
+.add-med-label input {
+    margin-top: 4px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.add-med-label input:focus {
+    outline: none;
+    border-color: #ffbb00;
+    box-shadow: 0 0 0 2px rgba(255, 187, 0, 0.25);
+}
+
+.add-med-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 8px 14px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-primary {
+    background: #ffbb00;
+    color: #2b1a00;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #ff9f00;
+}
+
+.btn-secondary {
+    background: #eee;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background: #ddd;
+}
+
+.add-med-status {
+    margin-top: 10px;
+    color: red;
+    font-size: 13px;
+}

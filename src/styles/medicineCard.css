@@ -1,0 +1,109 @@
+.med-card {
+    width: 260px;
+    border-radius: 24px;
+    background: #ffffff;
+    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.med-card-image {
+    height: 140px;
+    background: #f5f7fb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.med-card-image img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 16px;
+}
+
+.med-card-body {
+    padding: 14px 16px 16px;
+}
+
+.med-card-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.med-card-price {
+    font-weight: 600;
+    color: #15803d;
+    margin-bottom: 6px;
+}
+
+.med-card-meta {
+    font-size: 0.85rem;
+    color: #6b7280;
+}
+
+.med-card-footer {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.med-card-qty {
+    flex: 0 0 70px;
+    padding: 4px 6px;
+    border-radius: 999px;
+    border: 1px solid #d1d5db;
+}
+
+.med-card-add-btn {
+    flex: 1;
+    border-radius: 999px;
+    border: none;
+    padding: 8px 10px;
+    background: #16a34a;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.med-card-add-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+.med-card-image {
+    position: relative;
+}
+
+.med-card-badge{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(0, 200, 255, 0.18);
+    border: 1px solid rgba(0, 200, 255, 0.35);
+    backdrop-filter: blur(8px);
+}
+
+.med-card-price-wrap{
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.med-card-price-final{
+    margin: 0;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.med-card-price-old{
+    margin: 0;
+    font-size: 13px;
+    opacity: 0.75;
+    text-decoration: line-through;
+}

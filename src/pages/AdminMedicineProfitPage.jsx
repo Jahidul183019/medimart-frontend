@@ -390,8 +390,7 @@ export default function AdminMedicineProfitPage() {
                 </div>
 
                 <p style={{ marginTop: 10, opacity: 0.8 }}>
-                    Note: Profit is calculated from order items. If your order items don’t contain buyPriceAtSale,
-                    we use medicine.buyPrice from inventory as fallback.
+                    Note: Profit is calculated from order items.
                 </p>
             </div>
         </div>

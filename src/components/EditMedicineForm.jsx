@@ -38,8 +38,10 @@ export default function EditMedicineForm() {
     useEffect(() => {
         async function load() {
             try {
-                // optional noCache support if your service implements it
                 const data = await medicineService.getMedicine(id, { noCache: true });
+
+                const active = data?.discountActive ?? false;
+                const type = (data?.discountType ?? "PERCENT") || "PERCENT";
 
                 setForm({
                     name: data?.name ?? "",
@@ -49,9 +51,9 @@ export default function EditMedicineForm() {
                     quantity: data?.quantity ?? "",
                     expiryDate: data?.expiryDate ?? "",
 
-                    discountActive: Boolean(data?.discountActive),
-                    discountType: (data?.discountType ?? "PERCENT") || "PERCENT",
-                    discountValue: data?.discountActive ? (data?.discountValue ?? "") : "",
+                    discountActive: active,
+                    discountType: type,
+                    discountValue: active ? (data?.discountValue ?? "") : "",
                     discountStart: data?.discountStart ?? "",
                     discountEnd: data?.discountEnd ?? "",
                 });
@@ -71,7 +73,20 @@ export default function EditMedicineForm() {
         const { name, value, type, checked } = e.target;
 
         if (type === "checkbox") {
-            setForm((prev) => ({ ...prev, [name]: checked }));
+            setForm((prev) => {
+                // if discountActive is being turned OFF, clear fields too
+                if (name === "discountActive" && !checked) {
+                    return {
+                        ...prev,
+                        discountActive: false,
+                        discountType: "PERCENT",
+                        discountValue: "",
+                        discountStart: "",
+                        discountEnd: "",
+                    };
+                }
+                return { ...prev, [name]: checked };
+            });
             return;
         }
 
@@ -122,8 +137,8 @@ export default function EditMedicineForm() {
             return;
         }
 
-        // discount validation
-        const discountActive = Boolean(form.discountActive);
+        // discount validation (ESLint-safe, no redundant Boolean())
+        const discountActive = form.discountActive;
         const discountType = (form.discountType || "PERCENT").toUpperCase();
         const discountValueNum = Number(form.discountValue || 0);
 
@@ -158,28 +173,46 @@ export default function EditMedicineForm() {
         }
 
         try {
-            const fd = new FormData();
-            fd.append("name", form.name);
-            fd.append("category", form.category);
-            fd.append("price", String(priceNum));
-            fd.append("buyPrice", String(buyPriceNum));
-            fd.append("quantity", String(qtyNum));
-            fd.append("expiryDate", form.expiryDate);
-
-            // ✅ Always send discount fields
-            fd.append("discountActive", String(discountActive));
-            fd.append("discountType", discountActive ? discountType : "");
-            fd.append("discountValue", discountActive ? String(discountValueNum) : "0");
-            fd.append("discountStart", discountActive ? (form.discountStart || "") : "");
-            fd.append("discountEnd", discountActive ? (form.discountEnd || "") : "");
-
+            // If imageFile exists => send multipart to /{id}/multipart
+            // Else => send JSON to /{id}
             if (imageFile) {
+                const fd = new FormData();
+                fd.append("name", form.name);
+                fd.append("category", form.category);
+                fd.append("price", String(priceNum));
+                fd.append("buyPrice", String(buyPriceNum));
+                fd.append("quantity", String(qtyNum));
+                fd.append("expiryDate", form.expiryDate);
+
+                // always send discount fields
+                fd.append("discountActive", String(discountActive));
+                fd.append("discountType", discountActive ? discountType : "");
+                fd.append("discountValue", discountActive ? String(discountValueNum) : "0");
+                fd.append("discountStart", discountActive ? (form.discountStart || "") : "");
+                fd.append("discountEnd", discountActive ? (form.discountEnd || "") : "");
+
                 fd.append("image", imageFile);
+
+                await medicineService.updateMedicineMultipart(id, fd);
+            } else {
+                const payload = {
+                    name: form.name,
+                    category: form.category,
+                    price: priceNum,
+                    buyPrice: buyPriceNum,
+                    quantity: qtyNum,
+                    expiryDate: form.expiryDate,
+
+                    discountActive,
+                    discountType: discountActive ? discountType : null,
+                    discountValue: discountActive ? discountValueNum : 0,
+                    discountStart: discountActive ? (form.discountStart || null) : null,
+                    discountEnd: discountActive ? (form.discountEnd || null) : null,
+                };
+
+                await medicineService.updateMedicineJson(id, payload);
             }
 
-            await medicineService.updateMedicine(id, fd);
-
-            // ✅ IMPORTANT: force refresh inventory on dashboard
             goDashboardRefresh();
         } catch (err) {
             console.error("Update failed:", err);
@@ -206,11 +239,7 @@ export default function EditMedicineForm() {
         <div className="add-root">
             <div className="add-card">
                 <div className="add-header">
-                    <button
-                        type="button"
-                        className="add-back-btn"
-                        onClick={goDashboardRefresh}
-                    >
+                    <button type="button" className="add-back-btn" onClick={goDashboardRefresh}>
                         ← Back
                     </button>
                     <h1 className="add-title">Edit Medicine</h1>
@@ -221,70 +250,32 @@ export default function EditMedicineForm() {
                 <form className="add-form" onSubmit={handleSubmit}>
                     <div className="add-field">
                         <span>Name</span>
-                        <input
-                            type="text"
-                            name="name"
-                            value={form.name}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="text" name="name" value={form.name} onChange={handleChange} required />
                     </div>
 
                     <div className="add-field">
                         <span>Category</span>
-                        <input
-                            type="text"
-                            name="category"
-                            value={form.category}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="text" name="category" value={form.category} onChange={handleChange} required />
                     </div>
 
                     <div className="add-field">
                         <span>Selling Price</span>
-                        <input
-                            type="number"
-                            name="price"
-                            step="0.01"
-                            value={form.price}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="number" name="price" step="0.01" value={form.price} onChange={handleChange} required />
                     </div>
 
                     <div className="add-field">
                         <span>Buy Price (Cost)</span>
-                        <input
-                            type="number"
-                            name="buyPrice"
-                            step="0.01"
-                            value={form.buyPrice}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="number" name="buyPrice" step="0.01" value={form.buyPrice} onChange={handleChange} required />
                     </div>
 
                     <div className="add-field">
                         <span>Quantity</span>
-                        <input
-                            type="number"
-                            name="quantity"
-                            value={form.quantity}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="number" name="quantity" value={form.quantity} onChange={handleChange} required />
                     </div>
 
                     <div className="add-field">
                         <span>Expiry</span>
-                        <input
-                            type="date"
-                            name="expiryDate"
-                            value={form.expiryDate}
-                            onChange={handleChange}
-                            required
-                        />
+                        <input type="date" name="expiryDate" value={form.expiryDate} onChange={handleChange} required />
                     </div>
 
                     <div className="add-field">

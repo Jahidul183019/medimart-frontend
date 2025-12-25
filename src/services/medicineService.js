@@ -2,6 +2,10 @@
 import api from "./api";
 
 const medicineService = {
+    /* ==========================
+       GET
+       ========================== */
+
     async getAllMedicines({ noCache = false } = {}) {
         const url = noCache ? `/medicines?ts=${Date.now()}` : "/medicines";
         const res = await api.get(url);
@@ -14,14 +18,18 @@ const medicineService = {
         return res.data;
     },
 
+    /* ==========================
+       CREATE
+       ========================== */
+
+    // 🔹 CREATE with image (multipart)
     async createMedicine(formData) {
         if (!(formData instanceof FormData)) {
-            throw new Error("createMedicine expects FormData (multipart/form-data).");
+            throw new Error("createMedicine expects FormData.");
         }
 
         try {
-            // ✅ Let axios set Content-Type + boundary automatically
-            const res = await api.post("/medicines", formData);
+            const res = await api.post("/medicines/multipart", formData);
             return res.data;
         } catch (err) {
             console.error("[createMedicine failed]");
@@ -31,22 +39,56 @@ const medicineService = {
         }
     },
 
-    async updateMedicine(id, formData) {
-        if (!(formData instanceof FormData)) {
-            throw new Error("updateMedicine expects FormData (multipart/form-data).");
-        }
-
+    // 🔹 CREATE without image (JSON)
+    async createMedicineJson(payload) {
         try {
-            // ✅ Let axios set Content-Type + boundary automatically
-            const res = await api.put(`/medicines/${id}`, formData);
+            const res = await api.post("/medicines", payload);
             return res.data;
         } catch (err) {
-            console.error("[updateMedicine failed]");
+            console.error("[createMedicineJson failed]");
             console.error("Status:", err?.response?.status);
             console.error("Data:", err?.response?.data);
             throw err;
         }
     },
+
+    /* ==========================
+       UPDATE
+       ========================== */
+
+    // 🔹 UPDATE with image (multipart)
+    async updateMedicineMultipart(id, formData) {
+        if (!(formData instanceof FormData)) {
+            throw new Error("updateMedicineMultipart expects FormData.");
+        }
+
+        try {
+            const res = await api.put(`/medicines/${id}/multipart`, formData);
+            return res.data;
+        } catch (err) {
+            console.error("[updateMedicineMultipart failed]");
+            console.error("Status:", err?.response?.status);
+            console.error("Data:", err?.response?.data);
+            throw err;
+        }
+    },
+
+    // 🔹 UPDATE without image (JSON)
+    async updateMedicineJson(id, payload) {
+        try {
+            const res = await api.put(`/medicines/${id}`, payload);
+            return res.data;
+        } catch (err) {
+            console.error("[updateMedicineJson failed]");
+            console.error("Status:", err?.response?.status);
+            console.error("Data:", err?.response?.data);
+            throw err;
+        }
+    },
+
+    /* ==========================
+       DELETE
+       ========================== */
 
     async deleteMedicine(id) {
         const res = await api.delete(`/medicines/${id}`);

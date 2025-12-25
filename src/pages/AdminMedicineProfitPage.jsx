@@ -9,6 +9,10 @@ import "../styles/adminDashboard.css"; // reuse existing styles
 
 const VALID_STATUSES = new Set(["PAID", "DELIVERED"]);
 
+// ✅ Cache settings (speed)
+const CACHE_KEY = "admin_profit_cache_v1";
+const CACHE_TTL_MS = 60_000; // 1 min
+
 function toNum(v, fallback = 0) {
     const n = Number(v);
     return Number.isFinite(n) ? n : fallback;
@@ -61,9 +65,6 @@ function getItemQty(item) {
 }
 
 function getItemSellPricePerUnit(item) {
-    // Prefer: finalPricePerUnit (discounted)
-    // Fallback: unitPrice
-    // Fallback: price
     return toNum(
         item?.finalPricePerUnit ??
         item?.finalPrice ??
@@ -77,9 +78,6 @@ function getItemSellPricePerUnit(item) {
 }
 
 function getItemBuyPricePerUnit(item, medBuyPriceFallback = 0) {
-    // Prefer: buyPriceAtSale (snapshot)
-    // Fallback: medicine.buyPrice from order payload
-    // Fallback: buyPrice from /medicines map
     return toNum(
         item?.buyPriceAtSale ??
         item?.buyPrice ??
@@ -88,6 +86,16 @@ function getItemBuyPricePerUnit(item, medBuyPriceFallback = 0) {
         0,
         0
     );
+}
+
+// ✅ small debounce hook for search typing
+function useDebouncedValue(value, delay = 200) {
+    const [v, setV] = useState(value);
+    useEffect(() => {
+        const t = setTimeout(() => setV(value), delay);
+        return () => clearTimeout(t);
+    }, [value, delay]);
+    return v;
 }
 
 export default function AdminMedicineProfitPage() {
@@ -100,18 +108,56 @@ export default function AdminMedicineProfitPage() {
     const [orders, setOrders] = useState([]);
 
     const [q, setQ] = useState("");
+    const debouncedQ = useDebouncedValue(q, 250);
+
     const [sortKey, setSortKey] = useState("profit"); // profit | revenue | qty | name
     const [sortDir, setSortDir] = useState("desc");   // asc | desc
     const [onlySold, setOnlySold] = useState(true);
 
+    // ✅ Load cache instantly (if valid), then refresh in background
     useEffect(() => {
         let alive = true;
 
+        function readCache() {
+            try {
+                const raw = sessionStorage.getItem(CACHE_KEY);
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (!parsed?.ts) return null;
+                if (Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+                if (!Array.isArray(parsed.medicines) || !Array.isArray(parsed.orders)) return null;
+                return parsed;
+            } catch {
+                return null;
+            }
+        }
+
+        function writeCache(medList, orderList) {
+            try {
+                sessionStorage.setItem(
+                    CACHE_KEY,
+                    JSON.stringify({ ts: Date.now(), medicines: medList, orders: orderList })
+                );
+            } catch {
+                // ignore
+            }
+        }
+
         async function load() {
             try {
-                setLoading(true);
                 setErr("");
 
+                // ✅ FAST: show cached data instantly
+                const cached = readCache();
+                if (cached && alive) {
+                    setMedicines(cached.medicines);
+                    setOrders(cached.orders);
+                    setLoading(false);
+                } else {
+                    setLoading(true);
+                }
+
+                // ✅ Background refresh (same API, same data)
                 const [medList, orderList] = await Promise.all([
                     medicineService.getAllMedicines({ noCache: true }),
                     orderService.getAllOrdersAdmin(),
@@ -119,8 +165,13 @@ export default function AdminMedicineProfitPage() {
 
                 if (!alive) return;
 
-                setMedicines(Array.isArray(medList) ? medList : []);
-                setOrders(Array.isArray(orderList) ? orderList : []);
+                const safeMeds = Array.isArray(medList) ? medList : [];
+                const safeOrders = Array.isArray(orderList) ? orderList : [];
+
+                setMedicines(safeMeds);
+                setOrders(safeOrders);
+
+                writeCache(safeMeds, safeOrders);
             } catch (e) {
                 console.error("AdminMedicineProfitPage load error:", e);
                 if (!alive) return;
@@ -151,8 +202,8 @@ export default function AdminMedicineProfitPage() {
         return m;
     }, [medicines]);
 
-    // Aggregate from orders
-    const rows = useMemo(() => {
+    // ✅ HEAVY PART: aggregate once ONLY when orders/medMap change
+    const aggBase = useMemo(() => {
         const agg = new Map();
 
         (orders || []).forEach((o) => {
@@ -189,7 +240,6 @@ export default function AdminMedicineProfitPage() {
 
                 agg.set(medId, {
                     ...prev,
-                    // keep freshest name/category if present
                     name: name || prev.name,
                     category: med?.category || prev.category,
                     soldQty: prev.soldQty + qty,
@@ -200,9 +250,13 @@ export default function AdminMedicineProfitPage() {
             });
         });
 
-        let list = Array.from(agg.values());
+        return agg;
+    }, [orders, medMap]);
 
-        // If you want also show medicines with 0 sales:
+    // ✅ LIGHT PART: filter/sort based on controls (fast)
+    const rows = useMemo(() => {
+        let list = Array.from(aggBase.values());
+
         if (!onlySold) {
             const existingIds = new Set(list.map((x) => x.id));
             (medicines || []).forEach((m) => {
@@ -219,8 +273,7 @@ export default function AdminMedicineProfitPage() {
             });
         }
 
-        // Search filter
-        const query = String(q || "").trim().toLowerCase();
+        const query = String(debouncedQ || "").trim().toLowerCase();
         if (query) {
             list = list.filter((x) =>
                 String(x.name || "").toLowerCase().includes(query) ||
@@ -229,18 +282,16 @@ export default function AdminMedicineProfitPage() {
             );
         }
 
-        // Sorting
         const dir = sortDir === "asc" ? 1 : -1;
         list.sort((a, b) => {
             if (sortKey === "name") return String(a.name).localeCompare(String(b.name)) * dir;
             if (sortKey === "qty") return (toNum(a.soldQty) - toNum(b.soldQty)) * dir;
             if (sortKey === "revenue") return (toNum(a.revenue) - toNum(b.revenue)) * dir;
-            // default: profit
             return (toNum(a.profit) - toNum(b.profit)) * dir;
         });
 
         return list;
-    }, [orders, medMap, medicines, q, sortKey, sortDir, onlySold]);
+    }, [aggBase, medicines, debouncedQ, sortKey, sortDir, onlySold]);
 
     const totals = useMemo(() => {
         const t = rows.reduce(

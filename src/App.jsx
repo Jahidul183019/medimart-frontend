@@ -17,8 +17,11 @@ import VerifyOTPPage from "./pages/VerifyOTPPage.jsx";
 import CustomerDashboard from "./pages/CustomerDashboard.jsx";
 import AdminDashboardPage from "./pages/AdminDashboardPage.jsx";
 
-// NEW: Admin Notification Page
+// Admin Notification Page
 import AdminNotificationPage from "./pages/AdminNotificationPage.jsx";
+
+// Medicine Profit Page
+import AdminMedicineProfitPage from "./pages/AdminMedicineProfitPage.jsx";
 
 // Medicine Management (Admin)
 import AddMedicineForm from "./components/AddMedicineForm.jsx";
@@ -57,8 +60,11 @@ function App() {
             <Route path="/customer/dashboard" element={<CustomerDashboard />} />
             <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
 
-            {/* NEW ROUTE: Admin Notifications */}
+            {/* Admin Notifications */}
             <Route path="/admin/notifications" element={<AdminNotificationPage />} />
+
+            {/* NEW: Medicine Profit */}
+            <Route path="/admin/medicine-profit" element={<AdminMedicineProfitPage />} />
 
             {/* MEDICINE MANAGEMENT */}
             <Route path="/add-medicine" element={<AddMedicineForm />} />

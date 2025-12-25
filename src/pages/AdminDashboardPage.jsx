@@ -137,7 +137,7 @@ export default function AdminDashboardPage() {
                 return;
             }
 
-            setOrdersLoading(true);
+            setOrdersLoading(true); // ✅ FIX
 
             const list = await orderService.getAllOrdersAdmin();
             const safe = Array.isArray(list) ? list : [];
@@ -168,7 +168,7 @@ export default function AdminDashboardPage() {
                 return;
             }
 
-            setCancelLoading(true);
+            setCancelLoading(true); // ✅ FIX
 
             const list = await orderService.getCancelRequestsAdmin();
             const safe = Array.isArray(list) ? list : [];
@@ -199,7 +199,7 @@ export default function AdminDashboardPage() {
                 return;
             }
 
-            setUsersLoading(true);
+            setUsersLoading(true); // ✅ FIX
 
             const list = await userService.getAllUsersAdmin();
             const safe = Array.isArray(list) ? list : [];
@@ -254,7 +254,6 @@ export default function AdminDashboardPage() {
 
             try {
                 await medicineService.deleteMedicine(id);
-
                 clearInventoryCache();
                 loadMedicines(true);
             } catch (err) {
@@ -440,16 +439,17 @@ export default function AdminDashboardPage() {
                             ["cancelRequests", "Cancel Requests", "Approve/Reject cancellation"],
                             ["users", "Users", "Manage admins & customers"],
                             ["reports", "Reports", "Sales & analytics reports"],
+                            ["medicineProfit", "Medicine Profit", "Medicine list + total profit"], // ✅ NEW
                             ["notifications", "Notifications", "Send messages to customers"],
                         ].map(([key, title, desc]) => (
                             <button
                                 key={key}
                                 className={`admin-option-card ${activeSection === key ? "active" : ""}`}
-                                onClick={() =>
-                                    key === "notifications"
-                                        ? navigate("/admin/notifications")
-                                        : setActiveSection(key)
-                                }
+                                onClick={() => {
+                                    if (key === "notifications") return navigate("/admin/notifications");
+                                    if (key === "medicineProfit") return navigate("/admin/medicine-profit");
+                                    setActiveSection(key);
+                                }}
                             >
                                 <h3>{title}</h3>
                                 <p>{desc}</p>
@@ -599,13 +599,17 @@ export default function AdminDashboardPage() {
 
                                     <div className="admin-kpi-card">
                                         <p className="kpi-label">Total Medicine Sold</p>
-                                        <h3 className="kpi-value">{Number(totalUnitsSold || 0).toLocaleString("en-BD")}</h3>
+                                        <h3 className="kpi-value">
+                                            {Number(totalUnitsSold || 0).toLocaleString("en-BD")}
+                                        </h3>
                                         <p className="kpi-sub">Units sold (qty)</p>
                                     </div>
 
                                     <div className="admin-kpi-card">
                                         <p className="kpi-label">Total Orders</p>
-                                        <h3 className="kpi-value">{Number(totalOrders || 0).toLocaleString("en-BD")}</h3>
+                                        <h3 className="kpi-value">
+                                            {Number(totalOrders || 0).toLocaleString("en-BD")}
+                                        </h3>
                                         <p className="kpi-sub">All orders</p>
                                     </div>
                                 </div>

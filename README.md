@@ -6,7 +6,7 @@ MediMart Frontend is a modern React + Vite web application for managing and brow
 
 ## 🌐 Live Demo
 
-🚀 [MediMart Web App (Live)](https://medimart-frontend-eight.vercel.app)
+🚀 [MediMart Web App (Live)](https://medimart-frontend-coral.vercel.app/)
 
 ---
 

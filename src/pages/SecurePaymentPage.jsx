@@ -21,20 +21,20 @@ export default function SecurePaymentPage(props) {
     const amount =
         rawAmount !== null && rawAmount !== undefined ? Number(rawAmount) : null;
 
-    // ✅ Guest cannot access payment
+
     useEffect(() => {
         if (!loggedIn) {
             navigate("/auth", { replace: true, state: { from: "/payment" } });
             return;
         }
 
-        // ✅ If user lands here without order info, send back to cart
+
         if (!orderId || amount === null || Number.isNaN(amount)) {
             navigate("/cart", { replace: true });
         }
     }, [loggedIn, navigate, orderId, amount]);
 
-    // ✅ Default: after success go to Invoice view
+
     const onSuccess =
         props.onSuccess ??
         (() => {

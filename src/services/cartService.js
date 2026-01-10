@@ -3,21 +3,9 @@ import api from "./api";
 
 const CART_KEY = "cart";
 
-/**
- * Cart is stored in localStorage so it works for:
- * guest users
- * logged in users (even if backend gives no token)
- *
- * Cart item shape (what CartPage expects):
- * {
- *   id: medicineId,
- *   medicineId,
- *   medicineName,
- *   medicinePrice,
- *   quantity,
- *   lineTotal
- * }
- */
+/* ======================
+   Helpers
+   ====================== */
 
 function readCart() {
     try {
@@ -39,60 +27,88 @@ function normalizeQty(qty) {
     return Math.floor(n);
 }
 
+function round2(x) {
+    return Math.round(x * 100) / 100;
+}
+
+/* ======================
+   Discount Logic (same as backend)
+   ====================== */
+
+function isWithinWindow(start, end) {
+    const today = new Date().toISOString().slice(0, 10);
+    if (start && today < start) return false;
+    if (end && today > end) return false;
+    return true;
+}
+
+function calculateFinalPrice(basePrice, med) {
+    if (!med?.discountActive) return basePrice;
+
+    if (!isWithinWindow(med.discountStart, med.discountEnd)) {
+        return basePrice;
+    }
+
+    let discount = 0;
+    if (med.discountType === "PERCENT") {
+        discount = (basePrice * med.discountValue) / 100;
+    } else if (med.discountType === "FLAT") {
+        discount = med.discountValue;
+    }
+
+    if (discount < 0) discount = 0;
+    if (discount > basePrice) discount = basePrice;
+
+    return round2(basePrice - discount);
+}
+
+/* ======================
+   API
+   ====================== */
+
 async function fetchMedicine(medicineId) {
-    // Try backend medicine endpoint
-    // If your backend path is different, tell me and I’ll adjust
     const res = await api.get(`/medicines/${medicineId}`);
     return res.data;
 }
 
 const cartService = {
-    // Return cart items for UI table
+
     async getCartItems() {
         return readCart();
     },
 
-    // Small badge count
     getCartCount() {
-        const items = readCart();
-        return items.reduce((sum, it) => sum + Number(it.quantity || 0), 0);
+        return readCart().reduce((s, it) => s + Number(it.quantity || 0), 0);
     },
 
-    // Add (works for guest + logged-in)
     async addItem(medicineId, qty = 1) {
-        if (!medicineId) throw new Error("Missing medicineId");
         const addQty = normalizeQty(qty);
-
         const cart = readCart();
 
-        // if already exists, increment qty
-        const existing = cart.find((it) => String(it.medicineId) === String(medicineId));
+        const existing = cart.find(it => String(it.medicineId) === String(medicineId));
         if (existing) {
-            existing.quantity = normalizeQty(existing.quantity + addQty);
-            existing.lineTotal = Number(existing.medicinePrice || 0) * Number(existing.quantity || 0);
+            existing.quantity += addQty;
+            existing.lineTotal = round2(existing.finalUnitPrice * existing.quantity);
             writeCart(cart);
             return existing;
         }
 
-        // else fetch medicine info for name/price
-        let med = null;
-        try {
-            med = await fetchMedicine(medicineId);
-        } catch (e) {
-            // Still allow adding even if fetch fails
-            med = null;
-        }
+        const med = await fetchMedicine(medicineId);
 
-        const price = Number(med?.price ?? 0);
-        const name = med?.name ?? "Unknown medicine";
+        const basePrice = Number(med.price || 0);
+        const finalUnit = calculateFinalPrice(basePrice, med);
 
         const item = {
-            id: medicineId, // IMPORTANT: CartPage uses it.id for selection/removal
+            id: medicineId,
             medicineId,
-            medicineName: name,
-            medicinePrice: price,
+            medicineName: med.name,
+            medicinePrice: basePrice,      // original price
+            finalUnitPrice: finalUnit,     // discounted price
+            discountActive: med.discountActive,
+            discountType: med.discountType,
+            discountValue: med.discountValue,
             quantity: addQty,
-            lineTotal: price * addQty,
+            lineTotal: round2(finalUnit * addQty),
         };
 
         cart.push(item);
@@ -100,30 +116,23 @@ const cartService = {
         return item;
     },
 
-    // Remove by itemId (CartPage passes it.id)
-    async removeItem(itemId) {
-        if (!itemId) return;
-        const cart = readCart().filter((it) => String(it.id) !== String(itemId));
+    async updateQuantity(itemId, qty) {
+        const cart = readCart();
+        const it = cart.find(x => String(x.id) === String(itemId));
+        if (!it) return null;
+
+        it.quantity = normalizeQty(qty);
+        it.lineTotal = round2(it.finalUnitPrice * it.quantity);
         writeCart(cart);
-        return true;
+        return it;
+    },
+
+    async removeItem(itemId) {
+        writeCart(readCart().filter(it => String(it.id) !== String(itemId)));
     },
 
     async clearCart() {
         writeCart([]);
-        return true;
-    },
-
-    // Optional: update qty if you add plus/minus later
-    async updateQuantity(itemId, qty) {
-        const newQty = normalizeQty(qty);
-        const cart = readCart();
-        const it = cart.find((x) => String(x.id) === String(itemId));
-        if (!it) return null;
-
-        it.quantity = newQty;
-        it.lineTotal = Number(it.medicinePrice || 0) * Number(newQty);
-        writeCart(cart);
-        return it;
     },
 };
 
